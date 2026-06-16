@@ -1,0 +1,2258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Assistant: An Instructional Designer's Decision Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================================
+   AI Decision Guide — styles.css
+   Light, clean, modern. One accent color. No decoration noise.
+   ============================================================ */
+
+/* --- Reset & tokens --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white:      #FFFFFF;
+  --gray-50:    #F9FAFB;
+  --gray-100:   #F3F4F6;
+  --gray-200:   #E5E7EB;
+  --gray-400:   #9CA3AF;
+  --gray-600:   #4B5563;
+  --gray-900:   #111827;
+  --blue:       #2563EB;
+  --blue-light: #EFF6FF;
+  --blue-mid:   #DBEAFE;
+  --green:      #16A34A;
+  --green-light:#F0FDF4;
+  --red:        #DC2626;
+  --red-light:  #FEF2F2;
+  --amber:      #D97706;
+  --amber-light:#FFFBEB;
+
+  --sidebar-w:  248px;
+  --content-max: 680px;
+  --radius:     8px;
+  --radius-lg:  12px;
+}
+
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--white);
+  color: var(--gray-900);
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--white);
+  border-right: 1px solid var(--gray-200);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--gray-200);
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.sidebar-logo-mark {
+  background: var(--blue);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 7px;
+  border-radius: 5px;
+  letter-spacing: 0.04em;
+}
+
+.sidebar-logo-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-900);
+  line-height: 1.2;
+}
+
+/* Nav list */
+.sidebar-nav {
+  list-style: none;
+  flex: 1;
+  padding: 4px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-nav-item {
+  position: relative;
+}
+
+.sidebar-nav-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  text-align: left;
+  transition: background 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+
+.sidebar-nav-btn:hover { background: var(--gray-100); }
+
+.sidebar-nav-btn.active {
+  background: var(--blue-light);
+}
+
+.sidebar-nav-btn.active .nav-dot { background: var(--blue); border-color: var(--blue); }
+.sidebar-nav-btn.active .nav-label { color: var(--blue); font-weight: 600; }
+
+.sidebar-nav-btn.completed .nav-dot {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+.sidebar-nav-btn.completed .nav-dot::after {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 3px;
+  border-left: 1.5px solid white;
+  border-bottom: 1.5px solid white;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+.sidebar-nav-btn.completed .nav-label { color: var(--gray-600); }
+
+.nav-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--gray-300, #D1D5DB);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.nav-label {
+  font-size: 12.5px;
+  color: var(--gray-600);
+  line-height: 1.3;
+  font-weight: 400;
+}
+
+/* Sidebar section dividers */
+.sidebar-section-header {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  padding: 12px 8px 4px;
+}
+
+/* Sidebar footer */
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--gray-200);
+  flex-shrink: 0;
+}
+
+.sidebar-progress-label {
+  font-size: 11px;
+  color: var(--gray-400);
+  margin-bottom: 8px;
+}
+
+.sidebar-progress-track {
+  height: 3px;
+  background: var(--gray-200);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.sidebar-progress-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+/* ============================================================
+   MAIN CONTENT AREA
+   ============================================================ */
+
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-container {
+  flex: 1;
+  padding: 64px 48px 40px;
+  max-width: calc(var(--content-max) + 96px);
+}
+
+/* ============================================================
+   PAGE TYPES
+   ============================================================ */
+
+.page {
+  display: none;
+  animation: pageFade 0.25s ease;
+}
+.page.active { display: block; }
+
+@keyframes pageFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Cover / Title page --- */
+.page-cover {
+  padding-top: 32px;
+}
+
+.cover-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 20px;
+}
+
+.cover-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(32px, 4vw, 46px);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--gray-900);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+  max-width: 560px;
+}
+
+.cover-title em {
+  font-style: italic;
+  color: var(--blue);
+}
+
+.cover-desc {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--gray-600);
+  max-width: 540px;
+  margin-bottom: 36px;
+}
+
+.cover-meta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.cover-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--gray-600);
+}
+
+.cover-meta-item svg {
+  color: var(--gray-400);
+  flex-shrink: 0;
+}
+
+.cover-divider {
+  border: none;
+  border-top: 1px solid var(--gray-200);
+  margin: 0 0 36px;
+}
+
+.cover-audience {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  max-width: 480px;
+}
+
+.cover-audience-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 8px;
+}
+
+.cover-audience p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--gray-600);
+}
+
+/* --- Objectives page --- */
+.page-objectives {}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.page-subtitle {
+  font-size: 15px;
+  color: var(--gray-600);
+  margin-bottom: 36px;
+  line-height: 1.5;
+}
+
+.objectives-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 560px;
+}
+
+.objective-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px 22px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+}
+
+.objective-num {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  background: var(--blue);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.objective-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--gray-900);
+}
+
+/* --- Content pages --- */
+.page-content {}
+
+.content-section {
+  margin-bottom: 36px;
+}
+
+.content-section:last-child { margin-bottom: 0; }
+
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+
+.section-heading {
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.section-body {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--gray-600);
+  max-width: 600px;
+}
+
+.section-body p { margin-bottom: 14px; }
+.section-body p:last-child { margin-bottom: 0; }
+
+.section-body strong { color: var(--gray-900); font-weight: 600; }
+
+/* Info callout box */
+.callout {
+  border-left: 3px solid var(--blue);
+  background: var(--blue-light);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 16px 20px;
+  margin: 24px 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--gray-700, #374151);
+  max-width: 600px;
+}
+
+.callout strong { color: var(--gray-900); }
+
+/* Warning callout */
+.callout-warn {
+  border-left-color: var(--amber);
+  background: var(--amber-light);
+}
+
+/* Tip / best practice */
+.callout-tip {
+  border-left-color: var(--green);
+  background: var(--green-light);
+}
+
+/* Simple bullet list */
+.content-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0;
+  max-width: 580px;
+}
+
+.content-list li {
+  display: flex;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--gray-600);
+}
+
+.content-list li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  min-width: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  margin-top: 8px;
+}
+
+.content-list li strong { color: var(--gray-900); }
+
+/* Divider */
+.content-divider {
+  border: none;
+  border-top: 1px solid var(--gray-200);
+  margin: 36px 0;
+}
+
+/* ============================================================
+   SCENARIO BLOCK
+   ============================================================ */
+
+.scenario-block {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 28px 28px 24px;
+  margin: 28px 0;
+  max-width: 620px;
+}
+
+.scenario-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 12px;
+}
+
+.scenario-situation {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--gray-700, #374151);
+}
+
+.scenario-situation p { margin-bottom: 10px; }
+.scenario-situation p:last-child { margin-bottom: 0; }
+
+/* ============================================================
+   QUESTION / QUIZ BLOCK
+   ============================================================ */
+
+.question-block {
+  margin: 28px 0;
+  max-width: 620px;
+}
+
+.question-prompt {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-900);
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.question-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.choice-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  cursor: pointer;
+  background: var(--white);
+  transition: border-color 0.15s, background 0.15s;
+  text-align: left;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+}
+
+.choice-option:hover:not(.answered):not(:disabled) {
+  border-color: var(--blue);
+  background: var(--blue-light);
+}
+
+.choice-option:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.choice-option.selected {
+  border-color: var(--blue);
+  background: var(--blue-light);
+}
+
+.choice-option.correct {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.choice-option.incorrect {
+  border-color: var(--red);
+  background: var(--red-light);
+}
+
+.choice-option.show-correct {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.choice-option:disabled { cursor: default; }
+
+.choice-marker {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gray-300, #D1D5DB);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-400);
+  background: var(--white);
+  margin-top: 1px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.choice-option.selected .choice-marker {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: white;
+}
+
+.choice-option.correct .choice-marker {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.choice-option.incorrect .choice-marker {
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+}
+
+.choice-option.show-correct .choice-marker {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.choice-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--gray-700, #374151);
+  flex: 1;
+}
+
+/* Submit button */
+.question-submit {
+  padding: 10px 24px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.question-submit:hover { background: #1D4ED8; }
+.question-submit:disabled { opacity: 0.4; cursor: default; }
+.question-submit:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Feedback block */
+.question-feedback {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  line-height: 1.65;
+  display: none;
+}
+
+.question-feedback.visible { display: block; }
+
+.question-feedback.feedback-correct {
+  background: var(--green-light);
+  border: 1px solid #BBF7D0;
+  color: #14532D;
+}
+
+.question-feedback.feedback-incorrect {
+  background: var(--red-light);
+  border: 1px solid #FECACA;
+  color: #7F1D1D;
+}
+
+.feedback-verdict-line {
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================================
+   FINAL QUIZ (assessment) — distinct styling
+   ============================================================ */
+
+.assessment-header {
+  background: var(--gray-900);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 28px 28px 24px;
+  margin-bottom: 32px;
+  max-width: 620px;
+}
+
+.assessment-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.assessment-header p {
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.7;
+}
+
+/* ============================================================
+   RESULTS / SUMMARY PAGE
+   ============================================================ */
+
+.results-score-block {
+  text-align: center;
+  padding: 40px 0 32px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.results-score-num {
+  font-family: 'Fraunces', serif;
+  font-size: 80px;
+  font-weight: 600;
+  color: var(--blue);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.results-score-denom {
+  font-size: 20px;
+  color: var(--gray-400);
+  font-weight: 400;
+}
+
+.results-score-label {
+  font-size: 16px;
+  color: var(--gray-600);
+  margin-top: 8px;
+}
+
+.results-message {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--gray-600);
+  max-width: 520px;
+  margin: 0 auto 40px;
+  text-align: center;
+  padding: 0 8px;
+}
+
+.results-breakdown {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 auto 40px;
+}
+
+.results-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+}
+
+.results-row-icon {
+  font-size: 18px;
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.results-row-q {
+  flex: 1;
+  font-size: 13px;
+  color: var(--gray-700, #374151);
+  line-height: 1.4;
+}
+
+.results-row-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.badge-correct { background: var(--green-light); color: var(--green); }
+.badge-incorrect { background: var(--red-light); color: var(--red); }
+
+.results-takeaways {
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+
+.results-takeaways h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 16px;
+}
+
+.takeaway-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-200);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--gray-600);
+}
+
+.takeaway-item:last-child { border-bottom: none; }
+.takeaway-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+.takeaway-item strong { color: var(--gray-900); }
+
+.results-actions {
+  display: flex;
+  gap: 12px;
+  max-width: 400px;
+  margin: 0 auto;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.results-attribution {
+  text-align: center;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--gray-200);
+  font-size: 13px;
+  color: var(--gray-400);
+  max-width: 600px;
+}
+.results-attribution a { color: var(--blue); text-decoration: none; }
+.results-attribution a:hover { text-decoration: underline; }
+
+/* ============================================================
+   BOTTOM NAVIGATION
+   ============================================================ */
+
+.bottom-nav {
+  border-top: 1px solid var(--gray-200);
+  background: var(--white);
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  bottom: 0;
+  margin-left: 0;
+}
+
+.btn-back {
+  background: none;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  min-width: 100px;
+}
+
+.btn-back:hover { border-color: var(--gray-900); color: var(--gray-900); }
+.btn-back:disabled { opacity: 0.3; cursor: default; }
+.btn-back:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.bottom-nav-center {
+  font-size: 13px;
+  color: var(--gray-400);
+  text-align: center;
+}
+
+.btn-continue {
+  background: var(--blue);
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: white;
+  cursor: pointer;
+  transition: background 0.15s;
+  min-width: 120px;
+}
+
+.btn-continue:hover { background: #1D4ED8; }
+.btn-continue:disabled { opacity: 0.35; cursor: default; }
+.btn-continue:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.btn-restart {
+  background: none;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-restart:hover { border-color: var(--gray-900); color: var(--gray-900); }
+
+.btn-portfolio {
+  background: var(--blue);
+  border: none;
+  border-radius: var(--radius);
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: white;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-portfolio:hover { background: #1D4ED8; }
+
+/* ============================================================
+   MOBILE NAV TOGGLE
+   ============================================================ */
+
+.mobile-nav-toggle {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 200;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.mobile-nav-toggle span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--gray-600);
+  border-radius: 2px;
+}
+
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 40;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 100;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .mobile-nav-toggle { display: flex; }
+  .mobile-nav-overlay.visible { display: block; }
+
+  .main { margin-left: 0; }
+
+  .page-container {
+    padding: 48px 20px 24px;
+  }
+
+  .bottom-nav {
+    padding: 14px 20px;
+  }
+
+  .btn-back, .btn-continue { min-width: 80px; padding: 9px 14px; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .page.active { animation: none; }
+  .sidebar { transition: none; }
+  .sidebar-progress-fill { transition: none; }
+}
+
+/* Focus-visible ring */
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar" id="sidebar" aria-label="Module navigation">
+    <div class="sidebar-logo">
+      <span class="sidebar-logo-mark">AI</span>
+      <span class="sidebar-logo-text">Decision Guide</span>
+    </div>
+    <ol class="sidebar-nav" id="sidebarNav"></ol>
+    <div class="sidebar-footer">
+      <div class="sidebar-progress-label">
+        <span id="sidebarProgressText">Page 1 of 12</span>
+      </div>
+      <div class="sidebar-progress-track">
+        <div class="sidebar-progress-fill" id="sidebarProgressFill"></div>
+      </div>
+    </div>
+  </nav>
+
+  <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+
+  <main class="main" id="main">
+    <div class="page-container" id="pageContainer"></div>
+    <div class="bottom-nav" id="bottomNav">
+      <button class="btn-back" id="btnBack" onclick="goBack()">← Back</button>
+      <div class="bottom-nav-center" id="bottomNavCenter"></div>
+      <button class="btn-continue" id="btnContinue" onclick="goForward()">Continue →</button>
+    </div>
+  </main>
+
+  <script>
+/**
+ * content.js
+ * AI Assistant: An Instructional Designer's Decision Guide
+ *
+ * All module pages defined as structured data.
+ * Each page has a type that determines how app.js renders it:
+ *
+ *   "cover"       — Title page with module overview
+ *   "objectives"  — Learning objectives list
+ *   "content"     — Information + callouts + optional scenario
+ *   "question"    — Single inline question with feedback
+ *   "assessment"  — Final multi-question knowledge check
+ *   "results"     — Computed results and takeaways
+ *
+ * Questions have a `correct` index and per-choice `feedback`.
+ */
+
+const PAGES = [
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 1 — Cover
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "cover",
+    navLabel: "Introduction",
+    type: "cover",
+    eyebrow: "Interactive Learning Module",
+    title: "AI Assistant: An Instructional Designer's Decision Guide",
+    description: "Artificial intelligence tools are reshaping how instructional designers work — accelerating drafts, generating ideas, and reducing time on routine tasks. But faster isn't always better, and more isn't always more. This module helps you build the judgment to know when AI helps, when it hurts, and when it puts learners at risk.",
+    meta: [
+      { icon: "clock", text: "~15 minutes" },
+      { icon: "pages", text: "12 pages" },
+      { icon: "quiz", text: "5 knowledge checks + final quiz" }
+    ],
+    audienceLabel: "Who this is for",
+    audience: "Instructional designers and learning professionals who use or are considering using AI tools in their design and development workflow."
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 2 — Objectives
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "objectives",
+    navLabel: "Learning Objectives",
+    type: "objectives",
+    title: "What you'll be able to do",
+    subtitle: "By the end of this module, you should be able to:",
+    objectives: [
+      "Identify appropriate uses of AI throughout the instructional design process.",
+      "Recognize limitations and risks associated with AI-generated content.",
+      "Apply best practices for incorporating AI ethically and effectively."
+    ]
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 3 — AI in the ID Process (content + question)
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "ai-in-id",
+    navLabel: "AI in the ID Process",
+    type: "content",
+    sections: [
+      {
+        eyebrow: "Where We Are",
+        heading: "AI has entered the ID workflow",
+        body: `<p>AI tools are now capable of generating learning objectives, drafting scenario dialogue, writing quiz questions, producing image assets, and even suggesting course structures. For time-pressed designers, the appeal is obvious.</p>
+               <p>But AI tools are not instructional designers. They don't understand your audience, your client's organizational culture, your performance gap, or your SME's nuanced domain knowledge. They generate plausible-sounding output — and plausible is not the same as right.</p>`
+      },
+      {
+        type: "callout",
+        text: "<strong>The core principle:</strong> AI is a drafting accelerator, not a design expert. Your professional judgment is what makes AI-assisted work worth using."
+      },
+      {
+        heading: "Where AI adds genuine value",
+        body: `<p>Used well, AI can meaningfully reduce time on lower-judgment tasks, freeing you to spend more time on the work that actually requires an ID professional.</p>`,
+        list: [
+          "<strong>Brainstorming:</strong> Generating a wide range of scenario ideas, topic angles, or activity formats quickly.",
+          "<strong>First drafts:</strong> Getting raw material on the page for objectives, dialogue, or quiz items — even if heavy revision follows.",
+          "<strong>Variation generation:</strong> Creating distractor options, alternative phrasings, or scenario branches.",
+          "<strong>Formatting and structure:</strong> Turning a wall of SME notes into organized chunks."
+        ]
+      }
+    ],
+    question: {
+      id: "q1",
+      prompt: "An instructional designer uses AI to generate a complete set of learning objectives for a new compliance module and sends them to the client without review. What's the most significant risk?",
+      choices: [
+        "The objectives might use slightly different wording than the client prefers.",
+        "The objectives may sound credible but be misaligned with the actual performance gap, audience, and organizational context.",
+        "The client might notice they were AI-generated and lose confidence.",
+        "AI-generated objectives tend to be too long for most compliance modules."
+      ],
+      correct: 1,
+      feedback: [
+        "Wording preferences are easy to fix in revision. The deeper risk is structural, not stylistic.",
+        "Correct. AI has no knowledge of your specific audience, their existing gaps, what the organization actually needs learners to do differently, or what will satisfy the compliance requirement. It generates objectives that sound reasonable — but reasonable and right are different things. Every AI-generated objective needs to be evaluated against real design criteria before it goes anywhere.",
+        "Transparency matters, but it's a secondary concern here. The primary risk is that the objectives may simply be wrong for the situation.",
+        "Length is a formatting issue, not a substantive risk. The problem isn't how many words — it's whether the objectives reflect what this audience actually needs."
+      ]
+    }
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 4 — Writing with AI (content + scenario + question)
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "writing-with-ai",
+    navLabel: "Writing with AI",
+    type: "content",
+    sections: [
+      {
+        eyebrow: "Content Development",
+        heading: "Drafting objectives, dialogue, and scenarios",
+        body: `<p>Writing is where most instructional designers first reach for AI — and for good reason. Staring at a blank doc is time-consuming, and AI can break the paralysis fast.</p>
+               <p>The key is understanding what you're actually getting. AI outputs reflect the average of what exists in its training data — which means it tends toward the generic, the expected, and the risk-averse. That's fine for a first draft. It's not fine as a final product.</p>`
+      },
+      {
+        type: "callout",
+        variant: "tip",
+        text: "<strong>Practical tip:</strong> Give AI richer context and you get better raw material. Instead of \"write learning objectives for a sales training,\" try \"write learning objectives for a B2B software sales rep who is six months into the role, has completed product training, and needs to improve discovery conversations with technical buyers.\""
+      },
+      {
+        heading: "Scenario dialogue",
+        body: `<p>Scenario dialogue is one of AI's stronger use cases in ID — it can generate a range of character voices and conflict setups quickly. But AI dialogue has recognizable failure modes: characters who speak in exposition, conflicts that feel contrived, and emotional beats that don't ring true.</p>
+               <p>Read any AI-generated dialogue aloud before using it. If it sounds like someone explaining a situation rather than living in it, rewrite it.</p>`
+      },
+      {
+        type: "scenario",
+        label: "Scenario",
+        text: `<p>Priya is designing a branching scenario for a module on difficult performance conversations. She needs a scene where a manager avoids giving direct feedback to an underperforming employee. She asks AI to write the scene and receives a 200-word exchange in about 10 seconds.</p>
+               <p>The dialogue is grammatically clean and hits the instructional beat, but the manager character sounds like they're narrating their own avoidance: "I just don't want to make things awkward, so I'll change the subject." No real manager talks like that.</p>`
+      }
+    ],
+    question: {
+      id: "q2",
+      prompt: "What should Priya do with the AI-generated dialogue?",
+      choices: [
+        "Use it as written — it hits the instructional goal and dialogue quality is subjective.",
+        "Discard it and write the scene from scratch.",
+        "Use it as a structural starting point, rewrite the manager's lines so the avoidance is shown through behavior rather than stated explicitly, and read the revised version aloud to check.",
+        "Ask AI to revise it until it sounds more natural, then use the result without further review."
+      ],
+      correct: 2,
+      feedback: [
+        "Hitting the instructional goal is necessary but not sufficient. Dialogue that feels inauthentic teaches learners to recognize a fake scenario, not a real situation. They disengage.",
+        "Discarding it entirely throws away time savings without a clear quality reason. The structure AI provided can still be useful — the problem is craft, not concept.",
+        "Right. The structural beat is there — manager avoiding feedback. The problem is execution: showing avoidance through realistic behavior is more effective than having a character announce their avoidance. Reading aloud is the single best way to catch dialogue that reads fine on paper but sounds wrong spoken. This is exactly how to work with AI on dialogue.",
+        "Asking AI to fix AI output creates a loop. If the underlying issue is that AI tends to have characters explain their internal states rather than demonstrate them through behavior, more AI passes won't fix that. You need a human reader with craft judgment in the loop."
+      ]
+    }
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 5 — Assessments & Accuracy (content + question)
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "assessments",
+    navLabel: "Assessments & Accuracy",
+    type: "content",
+    sections: [
+      {
+        eyebrow: "Knowledge Checks & Quizzes",
+        heading: "The accuracy problem with AI-generated assessment items",
+        body: `<p>AI is good at generating quiz questions that look right. Subject-verb agreement is clean, the format follows conventions, and the distractors sound like plausible wrong answers. The problem is that AI can be confidently wrong about factual details — especially in regulatory, clinical, legal, or technical domains.</p>
+               <p>A question with a subtly incorrect answer, or a distractor that is actually correct, teaches learners the wrong thing. For compliance training especially, that has real consequences.</p>`
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        text: "<strong>Watch for this:</strong> AI hallucination — where a model generates specific-sounding facts that are simply fabricated — is particularly dangerous in assessment items. A question about OSHA recordkeeping thresholds or HIPAA notification timelines may look authoritative while citing the wrong regulation entirely."
+      },
+      {
+        heading: "A responsible workflow for AI-assisted assessment",
+        list: [
+          "<strong>Generate more than you need.</strong> Ask for 10–12 items when you need 5. Evaluate each against your content and objectives before selecting.",
+          "<strong>Verify against primary sources.</strong> For any regulatory, legal, or technical claim in a question or answer choice, verify against the actual source document — not just your course content.",
+          "<strong>Don't let AI verify itself.</strong> Asking AI to check its own output is circular. The model that generated the error will often generate a confident explanation of why it's correct.",
+          "<strong>SME review is a checkpoint, not your QA.</strong> Your job is to deliver verified content for SME review — not to hand raw AI output to the SME and let them find the errors."
+        ]
+      }
+    ],
+    question: {
+      id: "q3",
+      prompt: "You've used AI to generate five knowledge check questions for a module on clinical documentation requirements. Before sending to the SME for review, what's the most important step?",
+      choices: [
+        "Run a readability check to ensure the questions are at the right level.",
+        "Verify each question and answer option against the actual clinical documentation standards — not just the course content.",
+        "Ask AI to review the questions for accuracy.",
+        "Send them as-is — the SME will catch any errors."
+      ],
+      correct: 1,
+      feedback: [
+        "Readability matters, but it's a style check. The more urgent issue is factual accuracy — a readable question with a wrong answer is worse than a slightly dense question with a right answer.",
+        "Correct. For clinical or regulatory content, AI-generated questions must be checked against authoritative source material, not just compared to your course content. Your course content may itself have gaps or imprecisions — the source document is the ground truth. Do this before the SME sees the items.",
+        "This is the circular verification problem. AI generated the questions; it will almost always agree that they're correct. Its confidence in its own output is not evidence of accuracy.",
+        "This puts an unfair burden on the SME and risks your credibility. If the SME finds multiple errors in your AI-generated items, it signals that your QA process broke down. Your job is to deliver materials that are ready for expert review — not materials that still need error-finding."
+      ]
+    }
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 6 — Visual Assets (content + question)
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "visual-assets",
+    navLabel: "Visual Assets",
+    type: "content",
+    sections: [
+      {
+        eyebrow: "AI Image Generation",
+        heading: "Using AI for eLearning visuals",
+        body: `<p>AI image generation has become a genuinely useful tool for instructional designers working on tight budgets or timelines. Getting workplace-appropriate, diverse, situation-specific imagery without a stock subscription or a photo shoot is a real advantage.</p>
+               <p>But AI-generated images have consistent quality issues that require deliberate review — not a quick glance.</p>`
+      },
+      {
+        heading: "What to review, and why",
+        list: [
+          "<strong>Anatomy.</strong> Hands are the most common failure point — extra fingers, fused digits, unnatural positioning. Always check hands closely.",
+          "<strong>Text in images.</strong> AI-generated text within images (signs, labels, screens) is almost always garbled or nonsensical.",
+          "<strong>Background artifacts.</strong> Strange objects appearing in backgrounds, impossible architecture, items that fade out or repeat unnaturally.",
+          "<strong>Representation.</strong> AI image models can reflect and amplify bias — defaulting to certain demographics for leadership roles, others for service roles. Review with intention.",
+          "<strong>Brand alignment.</strong> AI can't know your client's visual standards. Confirm generated imagery fits the context before presenting it."
+        ]
+      },
+      {
+        type: "callout",
+        text: "<strong>On transparency:</strong> Clients have a right to know when their training contains AI-generated imagery. Many organizations have policies on this. Disclose AI use early in the project — don't wait for them to ask."
+      }
+    ],
+    question: {
+      id: "q4",
+      prompt: "A designer generates 40 AI images for a workplace safety course and quickly scans them before adding them to the course. Several images pass the scan and are added. A learner later points out that a safety sign in one image reads nonsense text. What process failure does this represent?",
+      choices: [
+        "The designer should have used stock photography instead.",
+        "AI image generation is too unreliable for eLearning and should never be used.",
+        "The scan wasn't systematic — specific known failure points (text in images, hands, backgrounds) require deliberate checking, not a general visual scan.",
+        "The learner shouldn't have been looking at background details."
+      ],
+      correct: 2,
+      feedback: [
+        "Stock photography is a reasonable alternative, but the issue here isn't the tool choice — it's the review process. The same problem could occur with stock if images weren't reviewed carefully.",
+        "AI image generation has real quality risks but is a legitimate tool with appropriate review. The failure here was the review process, not the tool itself.",
+        "Correct. A 'quick scan' catches obvious problems but misses known failure patterns that require you to specifically look for them. Text in images, anatomy (especially hands), and background coherence each need deliberate inspection — not incidental notice. A systematic checklist approach prevents this.",
+        "Learners engage with all visible content. A safety sign with garbled text undermines course credibility and, in a safety context, could cause real confusion."
+      ]
+    }
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 7 — Accessibility (content + question)
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "accessibility",
+    navLabel: "Accessibility",
+    type: "content",
+    sections: [
+      {
+        eyebrow: "Accessible Design",
+        heading: "AI and accessibility: a tool, not a solution",
+        body: `<p>AI can assist with accessibility tasks — generating alt text descriptions, suggesting caption improvements, or flagging potential contrast issues. At scale, this assistance matters: reviewing 80 images by hand is slow, and AI can produce a reasonable first-pass description for many of them.</p>
+               <p>The critical word is "first pass." AI-generated accessibility content requires human review, particularly where the instructional stakes are high.</p>`
+      },
+      {
+        heading: "The stakes aren't equal across all content",
+        body: `<p>A decorative image with generic alt text is a minor issue. An image of an evacuation route, an equipment diagram, or a step in a clinical procedure with wrong or missing alt text is a safety issue. The review effort you apply should reflect that difference.</p>
+               <p>A practical approach: use AI to generate alt text for all images, then review thoroughly for any image where the described content is directly instructional — procedures, safety steps, data visualizations, diagrams. Spot-check the rest.</p>`
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        text: "<strong>Don't do this:</strong> Assuming learners who use screen readers are a small minority and therefore accessibility quality doesn't matter as much. Accessibility is a legal requirement under ADA and Section 508 — and more importantly, it's the right thing to do. Learners who rely on assistive technology have exactly the same right to complete, accurate content."
+      }
+    ],
+    question: {
+      id: "q5",
+      prompt: "You're producing a module on fire evacuation procedures. You use AI to generate alt text for 65 images and don't have time to review all of them before the deadline. What's the most responsible approach?",
+      choices: [
+        "Deliver with all AI-generated alt text and add a note that it may be incomplete.",
+        "Remove all images and describe them in the body text instead.",
+        "Prioritize thorough review of images showing evacuation routes, exits, and safety equipment — where alt text errors have direct safety implications — and spot-check the others.",
+        "Request a deadline extension to review all 65 images individually."
+      ],
+      correct: 2,
+      feedback: [
+        "A disclaimer doesn't make the content accessible or legally compliant. It signals that quality control was skipped.",
+        "Removing images eliminates the accessibility problem but also removes instructional value that visual content often uniquely provides. This is a last resort, not a first response.",
+        "Correct. This is a risk-tiered approach: your review time goes where the consequence of an error is highest. Evacuation routes, emergency equipment, and procedural steps have real safety implications if a screen reader user gets wrong or incomplete information. A learner following incorrect alt text on an exit route diagram is not a minor UX problem. Prioritize accordingly.",
+        "Requesting an extension is a legitimate option if the content is critical enough — and for safety content, it may be the right call. But if the deadline is fixed, a tiered review approach lets you manage it without abandoning quality control entirely."
+      ]
+    }
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 8 — Data Privacy (content + question)
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "data-privacy",
+    navLabel: "Data Privacy",
+    type: "content",
+    sections: [
+      {
+        eyebrow: "Privacy & Confidentiality",
+        heading: "What not to put into AI tools",
+        body: `<p>Every time you paste content into an AI tool, you're sending that content to a third party. Consumer-tier AI tools — the free or standard versions of most commercial chatbots — typically use your inputs to train or improve their models, and they do not sign Business Associate Agreements (BAAs) or Data Processing Agreements (DPAs) with you.</p>
+               <p>This has real implications for instructional designers working with sensitive source material.</p>`
+      },
+      {
+        heading: "Categories that should never go into consumer AI tools",
+        list: [
+          "<strong>Protected Health Information (PHI)</strong> — patient names, records, diagnoses, treatment notes. This is a HIPAA violation.",
+          "<strong>Personally Identifiable Information (PII)</strong> — employee names, performance records, HR case details.",
+          "<strong>Confidential business information</strong> — proprietary processes, unreleased product details, strategic plans.",
+          "<strong>Client intellectual property</strong> — unpublished training materials, internal policies, trade secrets."
+        ]
+      },
+      {
+        type: "callout",
+        variant: "tip",
+        text: "<strong>The solution for PHI and PII:</strong> De-identify first. Replace names, dates, locations, and identifying details with fictional equivalents before pasting into any AI tool. The instructional value of the case stays intact; the legal and ethical risk is removed."
+      },
+      {
+        body: `<p>If your organization uses an enterprise AI deployment, verify with your IT department whether a BAA or DPA is in place before inputting sensitive content — and document that you checked. Don't assume enterprise = compliant.</p>`
+      }
+    ],
+    question: {
+      id: "q6",
+      prompt: "A healthcare client sends you three real patient case studies — including names, diagnoses, and treatment notes — to use as the basis for clinical scenario development. You want to use AI to help adapt them. What do you do?",
+      choices: [
+        "Paste them directly into your AI tool since you're only using them internally for design work.",
+        "De-identify the case studies first — replace all PHI with fictional equivalents — then use AI to help shape the scenarios.",
+        "Ask your AI tool if it stores inputs, and proceed if it says it doesn't.",
+        "Use the case studies only in the final course, not in your AI drafting process."
+      ],
+      correct: 1,
+      feedback: [
+        "The intended use doesn't change the legal reality. Pasting PHI into a consumer AI tool is a HIPAA violation regardless of what you plan to do with the output. \"Internal use\" is not a carve-out.",
+        "Correct. De-identification is the right solution — it's not a workaround, it's the designed approach. Once patient-identifiable information is replaced with fictional equivalents, the case has no PHI, and you can work with AI freely. You don't lose the clinical instructional value; you just remove the legal and ethical exposure.",
+        "An AI tool's disclosure about data storage cannot be relied upon for compliance purposes. Consumer tools may have privacy policies, but those policies are not BAAs — they don't satisfy HIPAA requirements. Don't make legal compliance decisions based on a chatbot's self-report.",
+        "The issue isn't just where the final content appears — it's what you put into the AI tool during development. Even if the final course never shows PHI, inputting it during drafting is still a violation."
+      ]
+    }
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 9 — Human Review (content + question)
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "human-review",
+    navLabel: "Human Review & QA",
+    type: "content",
+    sections: [
+      {
+        eyebrow: "Quality Assurance",
+        heading: "Why AI makes QA more important, not less",
+        body: `<p>There's a counterintuitive dynamic with AI-assisted content: because AI produces polished, well-organized output quickly, it can make content feel more finished than it actually is. A draft that reads smoothly is psychologically harder to scrutinize than one that obviously needs work.</p>
+               <p>This is exactly why QA discipline matters more when AI is involved — not less.</p>`
+      },
+      {
+        heading: "The SME review is not optional",
+        body: `<p>Subject matter expert review exists to catch what instructional designers can't catch: factual errors, outdated information, nuance that doesn't transfer from a general description to a specific domain context. AI-generated content introduces more opportunities for these errors, not fewer.</p>
+               <p>A colleague saying "it looks good" is not SME review. A deadline is not a reason to skip it. The question to ask yourself is: if a learner acts on wrong information from this course, what happens? The answer tells you how serious the QA obligation is.</p>`
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        text: "<strong>Common rationalization to resist:</strong> \"AI output is so good now that SME review is a formality.\" AI output is increasingly fluent — but fluency is not accuracy. A model that has processed millions of documents about clinical procedures can generate a confident, well-written description of the wrong procedure. Fluent wrong is worse than obviously rough right."
+      },
+      {
+        heading: "A practical QA checklist for AI-assisted ID work",
+        list: [
+          "Verify all factual claims against primary or authoritative sources.",
+          "Confirm learning objectives align with the actual performance gap — not just what sounds relevant.",
+          "Read all dialogue aloud before finalizing.",
+          "Check every image systematically for AI artifacts and representation issues.",
+          "Confirm no PHI or confidential content was used in AI prompts.",
+          "Complete SME review before delivery — no exceptions for deadline pressure."
+        ]
+      }
+    ],
+    question: {
+      id: "q7",
+      prompt: "Your team used AI heavily throughout a new module — brainstorming, objectives, dialogue, quiz items. A colleague suggests skipping the SME review to hit the delivery date, saying the content looks polished and thorough. What's the right response?",
+      choices: [
+        "Agree — if the content looks correct and the team is confident, SME review is a formality.",
+        "Skip SME review but add a disclaimer that the content was AI-assisted.",
+        "Conduct the review — even an abbreviated, focused review on the highest-risk content is better than none. Have the deadline conversation with the stakeholder.",
+        "Deliver on time and schedule a post-delivery review for corrections."
+      ],
+      correct: 2,
+      feedback: [
+        "\"Looking correct\" and \"being correct\" are different, especially for AI-assisted content. The team's confidence in AI output is not equivalent to a domain expert's verification. Fluency is not accuracy.",
+        "A disclaimer shifts responsibility to learners in a way that isn't fair or professional. It also signals that the design process broke down. Disclaimers don't make inaccurate content acceptable.",
+        "Correct. This is the professional response on both counts. The SME review is the quality control mechanism — and the delivery date is a constraint to negotiate, not a reason to remove quality control. Having a direct conversation with a stakeholder about needing one more day for review is a manageable professional situation. Delivering a course with unreviewed AI-generated content and having a learner act on a factual error is not.",
+        "Post-delivery corrections mean learners have already encountered — and possibly acted on — inaccurate content. In compliance, safety, or clinical training, that's not recoverable with a patch."
+      ]
+    }
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 10 — Ethics & Transparency (content — no question)
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "ethics",
+    navLabel: "Ethics & Transparency",
+    type: "content",
+    sections: [
+      {
+        eyebrow: "Professional Ethics",
+        heading: "The ethics of AI-assisted instructional design",
+        body: `<p>Using AI tools in your work is not an ethical issue by itself. Hiding it from clients who have a right to know is. Delivering unverified content that affects learner safety or compliance is. Using tools that expose learner data to unauthorized third parties is.</p>
+               <p>The ethical questions in AI-assisted ID work aren't about whether to use AI — they're about honesty, accountability, and who bears the consequences when something goes wrong.</p>`
+      },
+      {
+        heading: "Disclose early, not defensively",
+        body: `<p>Most clients are not opposed to AI use — many expect it. What erodes trust is discovering that you used tools or approaches they weren't told about. If your organization or client has AI policies, know them before you start. If they don't, establishing clear expectations at the project kickoff protects everyone.</p>
+               <p>The same applies to visual content. Clients making decisions about their brand presentation have a reasonable interest in knowing that images are AI-generated rather than photographed. Tell them.</p>`
+      },
+      {
+        type: "callout",
+        variant: "tip",
+        text: "<strong>A good default:</strong> Document your AI use the same way you would document any significant tool or vendor choice in a project — briefly, clearly, and as a matter of course. Not as a confession, but as part of professional practice."
+      },
+      {
+        heading: "Your name is on the work",
+        body: `<p>When a module ships, you are accountable for what's in it — not the AI tool that helped draft it. If a quiz question teaches the wrong regulation, that's your name on the course. If a scenario dialogue misrepresents a protected class in a way that training reviewers flag as problematic, that's your project.</p>
+               <p>AI tools don't have professional reputations. You do. That accountability is why professional judgment can't be outsourced.</p>`
+      }
+    ]
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 11 — Final Assessment
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "assessment",
+    navLabel: "Knowledge Check",
+    type: "assessment",
+    title: "Knowledge Check",
+    subtitle: "Answer all five questions, then review your results.",
+    questions: [
+      {
+        id: "aq1",
+        prompt: "Which of the following is the most appropriate use of AI in the instructional design process?",
+        choices: [
+          "Generating final learning objectives and using them as written.",
+          "Generating a range of scenario ideas that you then evaluate, filter, and adapt.",
+          "Writing assessment questions for compliance training and submitting them directly to the client.",
+          "Creating alt text for safety-procedure images and using it without review."
+        ],
+        correct: 1,
+        feedback: [
+          "AI can draft objectives, but they require evaluation against audience, context, performance gap, and design criteria before they're ready to use. \"As written\" skips the step that makes them useful.",
+          "Correct. Using AI to generate options you then evaluate, filter, and adapt is the right workflow across virtually all ID tasks. AI provides quantity and speed; your judgment provides quality and alignment.",
+          "Compliance content requires verification against authoritative source material before it goes anywhere. Raw AI output to a client skips that step entirely.",
+          "Alt text for safety-procedure images requires human review — errors here can have real safety consequences for screen reader users."
+        ]
+      },
+      {
+        id: "aq2",
+        prompt: "What is the primary risk of using consumer-tier AI tools when working with real patient case studies provided by a healthcare client?",
+        choices: [
+          "The AI may not understand clinical terminology accurately.",
+          "Pasting patient information into consumer AI tools likely violates HIPAA and exposes PHI to unauthorized third parties.",
+          "The resulting scenarios may feel generic rather than realistic.",
+          "The client may prefer that designers work manually with sensitive materials."
+        ],
+        correct: 1,
+        feedback: [
+          "Clinical terminology accuracy is a concern for the quality of the output — but it's not the primary risk. The regulatory issue is more serious.",
+          "Correct. Consumer AI tools are not HIPAA-covered entities and do not have BAAs in place. Pasting PHI into these tools — regardless of intended use — is a violation. De-identification is the required step before AI involvement.",
+          "Scenario quality is a real concern but a secondary one. The legal and ethical exposure comes first.",
+          "Client preference matters, but the more fundamental issue is legal compliance. It's not just a preference question."
+        ]
+      },
+      {
+        id: "aq3",
+        prompt: "An instructional designer asks AI to review a set of quiz questions it just generated, to verify their accuracy. What's the core problem with this approach?",
+        choices: [
+          "AI review takes too long compared to manual review.",
+          "AI tools may not have access to the course content.",
+          "The same model that generated the questions will evaluate them — if the original information was wrong, the evaluation will likely confirm it as correct.",
+          "AI can only review multiple-choice formats, not other question types."
+        ],
+        correct: 2,
+        feedback: [
+          "The time issue isn't the core problem. The verification method is fundamentally flawed regardless of how fast it is.",
+          "Context access is an operational limitation, but it doesn't address the deeper problem of circular verification.",
+          "Correct. This is the circular verification problem. AI models generate confident-sounding output regardless of accuracy — asking the same model to evaluate its own output won't surface errors caused by the model's own knowledge limitations or hallucinations. Independent verification against primary sources is required.",
+          "This is not accurate — AI can review many question formats. The problem is methodological, not format-based."
+        ]
+      },
+      {
+        id: "aq4",
+        prompt: "Why does the quality of AI-assisted eLearning content still require the same SME review process as non-AI content?",
+        choices: [
+          "Because clients expect SME review as a deliverable, regardless of content quality.",
+          "Because AI output is fluent and well-organized, which can make it harder to spot errors — and it has no mechanism to know if its information is accurate for your specific context.",
+          "Because AI tools used in ID work are not yet reliable enough to produce readable content.",
+          "Because SME review is required for legal compliance in most industries."
+        ],
+        correct: 1,
+        feedback: [
+          "Client expectations matter, but they're not the substantive reason. The issue is about content quality and accuracy, not process optics.",
+          "Correct. Fluency is the trap. AI produces smooth, organized, confident-sounding text — and that makes it psychologically harder to scrutinize. But fluency is not accuracy. SME review exists to catch what AI can't: factual errors, outdated information, contextual misalignment, and domain nuance. AI use increases the need for this check, not decreases it.",
+          "Modern AI tools produce very readable content — readability is not the concern. Accuracy and alignment are.",
+          "SME review may be contractually required in some contexts, but the fundamental reason is content quality, not legal mandate."
+        ]
+      },
+      {
+        id: "aq5",
+        prompt: "Which statement best describes the ethical obligation an instructional designer has when using AI tools in client work?",
+        choices: [
+          "AI use should be disclosed only if the client specifically asks about it.",
+          "AI tools are standard in the industry now, so disclosure is generally not expected.",
+          "Designers should disclose AI use proactively, verify content accuracy before delivery, protect client data, and take professional accountability for the final work.",
+          "Ethical obligations are met as long as AI-generated content passes a quality review."
+        ],
+        correct: 2,
+        feedback: [
+          "Reactive disclosure — only when asked — puts clients in a position where they can't make informed decisions about their own project. Proactive transparency is the professional standard.",
+          "Industry normalization doesn't eliminate disclosure obligations. Clients have policies, preferences, and reasonable interests in knowing how their work was produced.",
+          "Correct. This captures the full picture: transparency with clients, accuracy verification before delivery, data protection throughout the process, and personal accountability for the finished product. None of these are optional — and quality review alone doesn't satisfy all of them.",
+          "Quality review addresses accuracy but not transparency, data protection, or the accountability question. All of these are part of the ethical obligation."
+        ]
+      }
+    ]
+  },
+
+  // ──────────────────────────────────────────────────────────
+  // PAGE 12 — Results (computed by app.js)
+  // ──────────────────────────────────────────────────────────
+  {
+    id: "results",
+    navLabel: "Results",
+    type: "results",
+    takeaways: [
+      {
+        icon: "✓",
+        heading: "AI drafts. You decide.",
+        body: "AI accelerates the generation of objectives, dialogue, quiz items, and images. Your expertise and professional judgment determine what's worth using — and what needs to change."
+      },
+      {
+        icon: "⚠",
+        heading: "Fluency is not accuracy.",
+        body: "AI produces confident, well-organized output even when the underlying information is wrong. SME review and primary-source verification remain essential for any content where accuracy matters."
+      },
+      {
+        icon: "🔒",
+        heading: "Protect sensitive data.",
+        body: "PHI, PII, and confidential business information should never be pasted into consumer AI tools. De-identify before you draft."
+      },
+      {
+        icon: "♿",
+        heading: "Accessibility requires human judgment.",
+        body: "AI-generated alt text, captions, and descriptions need human review — especially for safety-critical or highly instructional content where errors have real consequences."
+      },
+      {
+        icon: "↗",
+        heading: "Transparency builds trust.",
+        body: "Clients and stakeholders deserve to know when AI is part of the production process. Disclose early, document clearly, and treat AI use as a standard project communication — not a confession."
+      },
+      {
+        icon: "◎",
+        heading: "You are accountable for the work.",
+        body: "AI tools don't have professional reputations. You do. The quality, accuracy, and ethical integrity of the final product are yours to own — regardless of which tools helped build it."
+      }
+    ]
+  }
+
+]; // end PAGES
+/**
+ * app.js
+ * AI Assistant: An Instructional Designer's Decision Guide
+ *
+ * Manages:
+ *  - Page rendering from PAGES data
+ *  - Sidebar navigation state
+ *  - Forward/back navigation
+ *  - Inline question interactions
+ *  - Assessment scoring
+ *  - Results page generation
+ */
+
+// ─────────────────────────────────
+// STATE
+// ─────────────────────────────────
+
+const STATE = {
+  currentPage: 0,
+  completedPages: new Set(),
+  // For inline questions: tracks which have been answered
+  answeredQuestions: {},   // { questionId: choiceIndex }
+  // For assessment: tracks answers before submit
+  assessmentAnswers: {},   // { questionId: choiceIndex }
+  assessmentSubmitted: false,
+  assessmentScore: 0
+};
+
+// ─────────────────────────────────
+// INIT
+// ─────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildSidebar();
+  renderPage(0);
+  setupMobileNav();
+});
+
+// ─────────────────────────────────
+// SIDEBAR
+// ─────────────────────────────────
+
+function buildSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  nav.innerHTML = '';
+
+  PAGES.forEach((page, i) => {
+    const li = document.createElement('li');
+    li.className = 'sidebar-nav-item';
+
+    const btn = document.createElement('button');
+    btn.className = 'sidebar-nav-btn';
+    btn.id = `nav-btn-${i}`;
+    btn.setAttribute('aria-current', i === 0 ? 'page' : 'false');
+    btn.onclick = () => goToPage(i);
+
+    btn.innerHTML = `
+      <span class="nav-dot" aria-hidden="true"></span>
+      <span class="nav-label">${page.navLabel}</span>
+    `;
+
+    li.appendChild(btn);
+    nav.appendChild(li);
+  });
+
+  updateSidebar();
+}
+
+function updateSidebar() {
+  const total = PAGES.length;
+  const current = STATE.currentPage;
+  const completed = STATE.completedPages.size;
+
+  // Update nav buttons
+  document.querySelectorAll('.sidebar-nav-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === current);
+    btn.classList.toggle('completed', STATE.completedPages.has(i) && i !== current);
+    btn.setAttribute('aria-current', i === current ? 'page' : 'false');
+  });
+
+  // Progress bar
+  const pct = Math.round((completed / total) * 100);
+  document.getElementById('sidebarProgressFill').style.width = pct + '%';
+  document.getElementById('sidebarProgressText').textContent =
+    `Page ${current + 1} of ${total}`;
+}
+
+// ─────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────
+
+function goToPage(index) {
+  if (index < 0 || index >= PAGES.length) return;
+
+  // Mark current as completed before leaving
+  STATE.completedPages.add(STATE.currentPage);
+  STATE.currentPage = index;
+
+  renderPage(index);
+  updateSidebar();
+  updateBottomNav();
+  closeMobileNav();
+
+  // Scroll to top
+  document.getElementById('main').scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goForward() {
+  const page = PAGES[STATE.currentPage];
+
+  // Block advance on assessment until submitted
+  if (page.type === 'assessment' && !STATE.assessmentSubmitted) {
+    const allAnswered = page.questions.every(q => STATE.assessmentAnswers[q.id] !== undefined);
+    if (!allAnswered) {
+      showValidationHint('Answer all questions before continuing.');
+      return;
+    }
+    submitAssessment();
+    return;
+  }
+
+  goToPage(STATE.currentPage + 1);
+}
+
+function goBack() {
+  if (STATE.currentPage > 0) {
+    goToPage(STATE.currentPage - 1);
+  }
+}
+
+function updateBottomNav() {
+  const index = STATE.currentPage;
+  const page = PAGES[index];
+  const total = PAGES.length;
+
+  const btnBack = document.getElementById('btnBack');
+  const btnContinue = document.getElementById('btnContinue');
+  const center = document.getElementById('bottomNavCenter');
+
+  btnBack.disabled = index === 0;
+
+  // Last page (results): hide continue, show different CTA
+  if (page.type === 'results') {
+    btnContinue.style.display = 'none';
+    center.innerHTML = '';
+  } else {
+    btnContinue.style.display = '';
+    btnContinue.textContent = (index === total - 2) ? 'See Results →' :
+                              (page.type === 'assessment' && !STATE.assessmentSubmitted) ? 'Submit →' :
+                              'Continue →';
+    center.textContent = `${index + 1} / ${total}`;
+  }
+}
+
+function showValidationHint(msg) {
+  const center = document.getElementById('bottomNavCenter');
+  center.innerHTML = `<span style="color:#DC2626;font-size:13px;">${msg}</span>`;
+  setTimeout(() => updateBottomNav(), 3000);
+}
+
+// ─────────────────────────────────
+// PAGE RENDERER
+// ─────────────────────────────────
+
+function renderPage(index) {
+  const page = PAGES[index];
+  const container = document.getElementById('pageContainer');
+
+  let html = '';
+
+  switch (page.type) {
+    case 'cover':      html = renderCover(page); break;
+    case 'objectives': html = renderObjectives(page); break;
+    case 'content':    html = renderContent(page); break;
+    case 'assessment': html = renderAssessment(page); break;
+    case 'results':    html = renderResults(); break;
+  }
+
+  container.innerHTML = `<div class="page active" id="page-${page.id}">${html}</div>`;
+
+  // Wire up interactions
+  if (page.type === 'content' && page.question) {
+    setupQuestion(page.question);
+  }
+  if (page.type === 'assessment') {
+    setupAssessment(page);
+  }
+
+  updateBottomNav();
+}
+
+// ─────────────────────────────────
+// COVER PAGE
+// ─────────────────────────────────
+
+function renderCover(page) {
+  const metaIcons = {
+    clock: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    pages: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+    quiz: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
+  };
+
+  const metaHtml = page.meta.map(m =>
+    `<div class="cover-meta-item">${metaIcons[m.icon] || ''}<span>${m.text}</span></div>`
+  ).join('');
+
+  return `
+    <div class="page-cover">
+      <p class="cover-eyebrow">${page.eyebrow}</p>
+      <h1 class="cover-title">${page.title}</h1>
+      <p class="cover-desc">${page.description}</p>
+      <div class="cover-meta">${metaHtml}</div>
+      <hr class="cover-divider" />
+      <div class="cover-audience">
+        <p class="cover-audience-label">${page.audienceLabel}</p>
+        <p>${page.audience}</p>
+      </div>
+    </div>
+  `;
+}
+
+// ─────────────────────────────────
+// OBJECTIVES PAGE
+// ─────────────────────────────────
+
+function renderObjectives(page) {
+  const items = page.objectives.map((obj, i) =>
+    `<li class="objective-item">
+       <span class="objective-num">${i + 1}</span>
+       <span class="objective-text">${obj}</span>
+     </li>`
+  ).join('');
+
+  return `
+    <div class="page-objectives">
+      <h1 class="page-title">${page.title}</h1>
+      <p class="page-subtitle">${page.subtitle}</p>
+      <ul class="objectives-list">${items}</ul>
+    </div>
+  `;
+}
+
+// ─────────────────────────────────
+// CONTENT PAGE
+// ─────────────────────────────────
+
+function renderContent(page) {
+  const sectionsHtml = page.sections.map(s => renderSection(s)).join('');
+  const questionHtml = page.question ? renderQuestion(page.question) : '';
+
+  return `
+    <div class="page-content">
+      ${sectionsHtml}
+      ${questionHtml ? `<hr class="content-divider" />${questionHtml}` : ''}
+    </div>
+  `;
+}
+
+function renderSection(s) {
+  // Callout block
+  if (s.type === 'callout') {
+    const variantClass = s.variant === 'warn' ? 'callout-warn' : s.variant === 'tip' ? 'callout-tip' : '';
+    return `<div class="callout ${variantClass}">${s.text}</div>`;
+  }
+  // Scenario block
+  if (s.type === 'scenario') {
+    return `
+      <div class="scenario-block">
+        <p class="scenario-label">${s.label || 'Scenario'}</p>
+        <div class="scenario-situation">${s.text}</div>
+      </div>
+    `;
+  }
+
+  // Regular section
+  let html = '<div class="content-section">';
+  if (s.eyebrow) html += `<p class="section-eyebrow">${s.eyebrow}</p>`;
+  if (s.heading) html += `<h2 class="section-heading">${s.heading}</h2>`;
+  if (s.body)    html += `<div class="section-body">${s.body}</div>`;
+  if (s.list) {
+    html += `<ul class="content-list">` +
+      s.list.map(item => `<li>${item}</li>`).join('') +
+      `</ul>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+// ─────────────────────────────────
+// INLINE QUESTION
+// ─────────────────────────────────
+
+function renderQuestion(q) {
+  const letters = ['A', 'B', 'C', 'D'];
+  const choicesHtml = q.choices.map((text, i) =>
+    `<button class="choice-option" data-qid="${q.id}" data-index="${i}"
+             onclick="handleInlineChoice('${q.id}', ${i})">
+       <span class="choice-marker">${letters[i]}</span>
+       <span class="choice-text">${text}</span>
+     </button>`
+  ).join('');
+
+  return `
+    <div class="question-block" id="qblock-${q.id}">
+      <p class="question-prompt">${q.prompt}</p>
+      <div class="question-choices" id="qchoices-${q.id}" role="group" aria-label="Answer choices">
+        ${choicesHtml}
+      </div>
+      <button class="question-submit" id="qsubmit-${q.id}"
+              onclick="submitInlineQuestion('${q.id}')" disabled>
+        Check Answer
+      </button>
+      <div class="question-feedback" id="qfeedback-${q.id}" role="alert" aria-live="polite"></div>
+    </div>
+  `;
+}
+
+function setupQuestion(q) {
+  // If already answered in this session, restore the state
+  if (STATE.answeredQuestions[q.id] !== undefined) {
+    revealInlineFeedback(q.id, STATE.answeredQuestions[q.id], q);
+  }
+}
+
+function handleInlineChoice(qid, index) {
+  if (STATE.answeredQuestions[qid] !== undefined) return;
+
+  // Deselect all, select clicked
+  document.querySelectorAll(`[data-qid="${qid}"]`).forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  const btn = document.querySelector(`[data-qid="${qid}"][data-index="${index}"]`);
+  if (btn) btn.classList.add('selected');
+
+  // Enable submit
+  const submitBtn = document.getElementById(`qsubmit-${qid}`);
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn._pendingIndex = index;
+  }
+}
+
+function submitInlineQuestion(qid) {
+  const submitBtn = document.getElementById(`qsubmit-${qid}`);
+  if (!submitBtn || submitBtn.disabled) return;
+
+  const index = submitBtn._pendingIndex;
+  if (index === undefined) return;
+
+  // Find the question data
+  const page = PAGES[STATE.currentPage];
+  const q = page.question;
+  if (!q) return;
+
+  STATE.answeredQuestions[qid] = index;
+  revealInlineFeedback(qid, index, q);
+}
+
+function revealInlineFeedback(qid, selectedIndex, q) {
+  const isCorrect = selectedIndex === q.correct;
+
+  // Style choices
+  document.querySelectorAll(`[data-qid="${qid}"]`).forEach((btn, i) => {
+    btn.disabled = true;
+    btn.classList.add('answered');
+    btn.classList.remove('selected');
+    if (i === selectedIndex && isCorrect) btn.classList.add('correct');
+    else if (i === selectedIndex && !isCorrect) btn.classList.add('incorrect');
+    else if (i === q.correct) btn.classList.add('show-correct');
+  });
+
+  // Hide submit
+  const submitBtn = document.getElementById(`qsubmit-${qid}`);
+  if (submitBtn) submitBtn.style.display = 'none';
+
+  // Show feedback
+  const feedbackEl = document.getElementById(`qfeedback-${qid}`);
+  if (feedbackEl) {
+    feedbackEl.className = `question-feedback visible ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+    feedbackEl.innerHTML = `
+      <div class="feedback-verdict-line">
+        ${isCorrect ? '✓ Correct' : '✗ Incorrect'}
+      </div>
+      ${q.feedback[selectedIndex]}
+    `;
+  }
+}
+
+// ─────────────────────────────────
+// ASSESSMENT PAGE
+// ─────────────────────────────────
+
+function renderAssessment(page) {
+  const questionsHtml = page.questions.map((q, qi) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const choices = q.choices.map((text, i) =>
+      `<button class="choice-option" data-aqid="${q.id}" data-index="${i}"
+               onclick="handleAssessmentChoice('${q.id}', ${i})">
+         <span class="choice-marker">${letters[i]}</span>
+         <span class="choice-text">${text}</span>
+       </button>`
+    ).join('');
+
+    return `
+      <div class="question-block" id="aqblock-${q.id}" style="margin-bottom:32px;">
+        <p class="question-prompt" style="margin-bottom:14px;">
+          <span style="color:var(--gray-400);font-weight:400;font-size:13px;">Question ${qi + 1} of ${page.questions.length}</span><br/>
+          ${q.prompt}
+        </p>
+        <div class="question-choices" id="aqchoices-${q.id}" role="group" aria-label="Answer choices">
+          ${choices}
+        </div>
+        <div class="question-feedback" id="aqfeedback-${q.id}" role="alert" aria-live="polite"></div>
+      </div>
+    `;
+  }).join('<hr class="content-divider" />');
+
+  return `
+    <div class="assessment-header">
+      <h2>${page.title}</h2>
+      <p>${page.subtitle}</p>
+    </div>
+    ${questionsHtml}
+  `;
+}
+
+function setupAssessment(page) {
+  // If already submitted in session, restore state
+  if (STATE.assessmentSubmitted) {
+    revealAssessmentResults(page);
+  }
+}
+
+function handleAssessmentChoice(qid, index) {
+  if (STATE.assessmentSubmitted) return;
+
+  STATE.assessmentAnswers[qid] = index;
+
+  // Update UI: deselect all for this question, select clicked
+  document.querySelectorAll(`[data-aqid="${qid}"]`).forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  const btn = document.querySelector(`[data-aqid="${qid}"][data-index="${index}"]`);
+  if (btn) btn.classList.add('selected');
+
+  updateBottomNav();
+}
+
+function submitAssessment() {
+  const page = PAGES[STATE.currentPage];
+
+  // Check all answered
+  const allAnswered = page.questions.every(q => STATE.assessmentAnswers[q.id] !== undefined);
+  if (!allAnswered) {
+    showValidationHint('Please answer all questions first.');
+    return;
+  }
+
+  STATE.assessmentSubmitted = true;
+
+  // Score
+  let score = 0;
+  page.questions.forEach(q => {
+    if (STATE.assessmentAnswers[q.id] === q.correct) score++;
+  });
+  STATE.assessmentScore = score;
+
+  revealAssessmentResults(page);
+
+  // Advance the continue button
+  const btnContinue = document.getElementById('btnContinue');
+  btnContinue.textContent = 'See Results →';
+}
+
+function revealAssessmentResults(page) {
+  page.questions.forEach(q => {
+    const selectedIndex = STATE.assessmentAnswers[q.id];
+    if (selectedIndex === undefined) return;
+    const isCorrect = selectedIndex === q.correct;
+
+    document.querySelectorAll(`[data-aqid="${q.id}"]`).forEach((btn, i) => {
+      btn.disabled = true;
+      btn.classList.remove('selected');
+      if (i === selectedIndex && isCorrect) btn.classList.add('correct');
+      else if (i === selectedIndex && !isCorrect) btn.classList.add('incorrect');
+      else if (i === q.correct) btn.classList.add('show-correct');
+    });
+
+    const feedbackEl = document.getElementById(`aqfeedback-${q.id}`);
+    const isCorrect2 = selectedIndex === q.correct;
+    if (feedbackEl) {
+      feedbackEl.className = `question-feedback visible ${isCorrect2 ? 'feedback-correct' : 'feedback-incorrect'}`;
+      feedbackEl.innerHTML = `
+        <div class="feedback-verdict-line">${isCorrect2 ? '✓ Correct' : '✗ Incorrect'}</div>
+        ${q.feedback[selectedIndex]}
+      `;
+    }
+  });
+}
+
+// ─────────────────────────────────
+// RESULTS PAGE
+// ─────────────────────────────────
+
+function renderResults() {
+  const page = PAGES.find(p => p.type === 'results');
+  const score = STATE.assessmentScore;
+  const total = 5; // assessment questions
+  const pct = Math.round((score / total) * 100);
+
+  let message = '';
+  if (pct === 100) {
+    message = "Perfect score. You have a strong command of responsible AI use in instructional design — the judgment to move quickly without cutting corners that matter.";
+  } else if (pct >= 80) {
+    message = "You got most of it right. A strong foundation for AI-assisted design work. Review any questions you missed — the nuances there are worth sitting with.";
+  } else if (pct >= 60) {
+    message = "Solid progress. A few areas to revisit, particularly around verification and data privacy — the stakes there are high enough that getting them right matters.";
+  } else {
+    message = "There are a few areas worth revisiting before putting these concepts into practice. The key principles below summarize what to take with you.";
+  }
+
+  // Assessment breakdown
+  const assessmentPage = PAGES.find(p => p.type === 'assessment');
+  const breakdownHtml = assessmentPage ? assessmentPage.questions.map(q => {
+    const selected = STATE.assessmentAnswers[q.id];
+    const isCorrect = selected === q.correct;
+    return `
+      <div class="results-row">
+        <div class="results-row-icon">${isCorrect ? '✓' : '✗'}</div>
+        <div class="results-row-q">${q.prompt}</div>
+        <div class="results-row-badge ${isCorrect ? 'badge-correct' : 'badge-incorrect'}">
+          ${isCorrect ? 'Correct' : 'Incorrect'}
+        </div>
+      </div>
+    `;
+  }).join('') : '';
+
+  const takeawaysHtml = page.takeaways.map(t => `
+    <div class="takeaway-item">
+      <span class="takeaway-icon">${t.icon}</span>
+      <div><strong>${t.heading}</strong><br/>${t.body}</div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="results-score-block">
+      <div>
+        <span class="results-score-num">${score}</span>
+        <span class="results-score-denom"> / ${total}</span>
+      </div>
+      <p class="results-score-label">Knowledge Check Score</p>
+    </div>
+    <p class="results-message">${message}</p>
+
+    ${breakdownHtml ? `
+    <div class="results-breakdown">
+      <h3 style="font-size:16px;font-weight:600;color:var(--gray-900);margin-bottom:14px;padding:0 8px;">Your Answers</h3>
+      ${breakdownHtml}
+    </div>` : ''}
+
+    <div class="results-takeaways" style="max-width:620px;margin:0 auto 40px;padding:0 8px;">
+      <h3>Key Takeaways</h3>
+      ${takeawaysHtml}
+    </div>
+
+    <div class="results-actions">
+      <button class="btn-restart" onclick="restartModule()">↺ Restart Module</button>
+      <a class="btn-portfolio" href="https://jacobjones.dev" target="_blank" rel="noopener">
+        View Portfolio →
+      </a>
+    </div>
+
+    <div class="results-attribution">
+      <p>Created by <strong>Jake Jones</strong> · Instructional Designer &amp; Developer<br/>
+      <a href="https://jacobjones.dev" target="_blank" rel="noopener">jacobjones.dev</a></p>
+    </div>
+  `;
+}
+
+// ─────────────────────────────────
+// MODULE RESTART
+// ─────────────────────────────────
+
+function restartModule() {
+  STATE.currentPage = 0;
+  STATE.completedPages = new Set();
+  STATE.answeredQuestions = {};
+  STATE.assessmentAnswers = {};
+  STATE.assessmentSubmitted = false;
+  STATE.assessmentScore = 0;
+
+  buildSidebar();
+  renderPage(0);
+  updateBottomNav();
+
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// ─────────────────────────────────
+// MOBILE NAV
+// ─────────────────────────────────
+
+function setupMobileNav() {
+  const toggle = document.getElementById('mobileNavToggle');
+  const overlay = document.getElementById('mobileNavOverlay');
+
+  toggle.addEventListener('click', () => {
+    const isOpen = document.getElementById('sidebar').classList.contains('open');
+    if (isOpen) closeMobileNav();
+    else openMobileNav();
+  });
+
+  overlay.addEventListener('click', closeMobileNav);
+}
+
+function openMobileNav() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('mobileNavOverlay').classList.add('visible');
+  document.getElementById('mobileNavToggle').setAttribute('aria-expanded', 'true');
+}
+
+function closeMobileNav() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mobileNavOverlay').classList.remove('visible');
+  document.getElementById('mobileNavToggle').setAttribute('aria-expanded', 'false');
+}
+  </script>
+</body>
+</html>
