@@ -4,184 +4,60 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Assistant: An Instructional Designer's Decision Guide</title>
-  <meta name="description" content="An interactive branching scenario for learning professionals exploring how to use AI effectively and responsibly in instructional design work." />
-
-  <!-- Google Fonts: DM Serif Display + DM Sans -->
+  <meta name="description" content="An interactive learning module for instructional designers exploring how to use AI effectively and responsibly." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
-
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- ============================================================
-       PROGRESS BAR (persistent top bar, shown during scenarios)
-  ============================================================ -->
-  <div class="progress-bar-container" id="progressBarContainer" aria-label="Module progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-    <div class="progress-bar-track">
-      <div class="progress-bar-fill" id="progressBarFill"></div>
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar" aria-label="Module navigation">
+    <div class="sidebar-logo">
+      <span class="sidebar-logo-mark">AI</span>
+      <span class="sidebar-logo-text">Decision Guide</span>
     </div>
-    <div class="progress-label" id="progressLabel">Scenario 1 of 8</div>
-  </div>
-
-  <!-- ============================================================
-       MAIN APP WRAPPER
-  ============================================================ -->
-  <main id="app" class="app">
-
-    <!-- ==================
-         SCREEN: INTRO
-    =================== -->
-    <section class="screen screen--intro active" id="screen-intro" aria-label="Introduction">
-      <div class="intro-layout">
-        <div class="intro-badge">Interactive Decision Guide</div>
-        <h1 class="intro-title">
-          AI Assistant:<br />
-          <em>An Instructional Designer's<br />Decision Guide</em>
-        </h1>
-        <p class="intro-sub">
-          Eight real scenarios. No ideal answers handed to you. Make decisions the way you would at work — then see what the evidence says.
-        </p>
-        <div class="intro-objectives">
-          <p class="objectives-label">Learning Objectives</p>
-          <ul>
-            <li>Identify appropriate uses of AI across the instructional design process</li>
-            <li>Recognize limitations and risks of AI-generated content</li>
-            <li>Apply best practices for incorporating AI ethically and effectively</li>
-          </ul>
-        </div>
-        <div class="intro-meta">
-          <span class="meta-tag">⏱ ~12 minutes</span>
-          <span class="meta-tag">🔀 Branching scenarios</span>
-          <span class="meta-tag">🏅 Results summary</span>
-        </div>
-        <button class="btn btn--primary btn--large" id="startBtn" onclick="startModule()">
-          Begin →
-        </button>
+    <ol class="sidebar-nav" id="sidebarNav">
+      <!-- Injected by JS -->
+    </ol>
+    <div class="sidebar-footer">
+      <div class="sidebar-progress-label">
+        <span id="sidebarProgressText">Page 1 of 12</span>
       </div>
-      <div class="intro-graphic" aria-hidden="true">
-        <div class="orbit-ring orbit-ring--outer"></div>
-        <div class="orbit-ring orbit-ring--middle"></div>
-        <div class="orbit-ring orbit-ring--inner"></div>
-        <div class="orbit-center">
-          <span class="orbit-icon">✦</span>
-        </div>
-        <div class="orbit-dot orbit-dot--1"></div>
-        <div class="orbit-dot orbit-dot--2"></div>
-        <div class="orbit-dot orbit-dot--3"></div>
+      <div class="sidebar-progress-track">
+        <div class="sidebar-progress-fill" id="sidebarProgressFill"></div>
       </div>
-    </section>
+    </div>
+  </nav>
 
-    <!-- ==================
-         SCREEN: SCENARIO
-    =================== -->
-    <section class="screen screen--scenario" id="screen-scenario" aria-label="Decision scenario" aria-live="polite">
-      <div class="scenario-layout">
+  <!-- Mobile nav toggle -->
+  <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
 
-        <!-- Left panel: context -->
-        <div class="scenario-context" id="scenarioContext">
-          <div class="context-tag" id="contextTag">Writing Learning Objectives</div>
-          <div class="context-illustration" id="contextIllustration" aria-hidden="true"></div>
-          <div class="context-situation" id="contextSituation">
-            <!-- Injected by JS -->
-          </div>
-        </div>
+  <!-- Main content -->
+  <main class="main" id="main">
+    <div class="page-container" id="pageContainer">
+      <!-- Pages injected by JS -->
+    </div>
 
-        <!-- Right panel: question + choices -->
-        <div class="scenario-decision" id="scenarioDecision">
-          <div class="decision-number" id="decisionNumber">01</div>
-          <h2 class="decision-question" id="decisionQuestion">
-            <!-- Injected by JS -->
-          </h2>
-          <div class="choices-list" id="choicesList" role="group" aria-label="Your choices">
-            <!-- Injected by JS -->
-          </div>
-        </div>
-
+    <!-- Bottom navigation -->
+    <div class="bottom-nav" id="bottomNav">
+      <button class="btn-back" id="btnBack" onclick="goBack()" aria-label="Go to previous page">
+        ← Back
+      </button>
+      <div class="bottom-nav-center" id="bottomNavCenter">
+        <!-- Page indicator or completion state -->
       </div>
-    </section>
+      <button class="btn-continue" id="btnContinue" onclick="goForward()" aria-label="Continue to next page">
+        Continue →
+      </button>
+    </div>
+  </main>
 
-    <!-- ==================
-         SCREEN: FEEDBACK
-    =================== -->
-    <section class="screen screen--feedback" id="screen-feedback" aria-label="Decision feedback" aria-live="polite">
-      <div class="feedback-layout">
-        <div class="feedback-verdict" id="feedbackVerdict">
-          <!-- BEST / GOOD / CAUTION / AVOID banner injected by JS -->
-        </div>
-        <div class="feedback-body">
-          <h2 class="feedback-choice-echo" id="feedbackChoiceEcho">You chose:</h2>
-          <p class="feedback-explanation" id="feedbackExplanation">
-            <!-- Injected by JS -->
-          </p>
-          <div class="feedback-principle" id="feedbackPrinciple">
-            <!-- Injected by JS -->
-          </div>
-        </div>
-        <button class="btn btn--primary" id="nextBtn" onclick="advanceScenario()">
-          <!-- Label injected by JS -->
-        </button>
-      </div>
-    </section>
-
-    <!-- ==================
-         SCREEN: RESULTS
-    =================== -->
-    <section class="screen screen--results" id="screen-results" aria-label="Module results">
-      <div class="results-layout">
-
-        <div class="results-header">
-          <div class="results-badge" id="resultsBadge"></div>
-          <h2 class="results-title">Decision Summary</h2>
-          <p class="results-intro" id="resultsIntro"></p>
-        </div>
-
-        <div class="results-score-ring" aria-hidden="true">
-          <svg viewBox="0 0 120 120" class="score-ring-svg">
-            <circle class="score-ring-track" cx="60" cy="60" r="50" />
-            <circle class="score-ring-fill" cx="60" cy="60" r="50" id="scoreRingFill" />
-          </svg>
-          <div class="score-ring-label">
-            <span class="score-number" id="scoreNumber">0</span>
-            <span class="score-denom">/ 8</span>
-            <span class="score-word">Best Choices</span>
-          </div>
-        </div>
-
-        <div class="results-breakdown" id="resultsBreakdown">
-          <!-- Injected by JS: one row per scenario -->
-        </div>
-
-        <div class="results-takeaways">
-          <h3 class="takeaways-heading">Key Takeaways</h3>
-          <div class="takeaways-grid" id="takeawaysGrid">
-            <!-- Injected by JS -->
-          </div>
-        </div>
-
-        <div class="results-actions">
-          <button class="btn btn--secondary" onclick="restartModule()">↺ Retake</button>
-          <a class="btn btn--primary" href="https://jacobjones.dev" target="_blank" rel="noopener">
-            View Portfolio →
-          </a>
-        </div>
-
-        <div class="results-attribution">
-          <p>Created by <strong>Jake Jones</strong> · Instructional Designer &amp; Developer · <a href="https://jacobjones.dev" target="_blank" rel="noopener">jacobjones.dev</a></p>
-        </div>
-
-      </div>
-    </section>
-
-  </main><!-- /app -->
-
-  <!-- ============================================================
-       SKIP LINK (accessibility)
-  ============================================================ -->
-  <a class="skip-link" href="#app">Skip to content</a>
-
-  <script src="scenarios.js"></script>
+  <script src="content.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
